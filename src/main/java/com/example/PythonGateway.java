@@ -1,20 +1,32 @@
 package com.example;
 
 import py4j.GatewayServer;
-import py4j.Py4JNetworkException;
-import py4j.Py4JServerConnection;
 
 public class PythonGateway {
+
+    private static GatewayServer gatewayServer;
+
+    public static void main(String[] args) {
+        gatewayServer = new GatewayServer(new PythonGateway());
+        gatewayServer.start();
+        System.out.println("Gateway Server Started");
+        
+        // Simulating Python call
+        PythonGateway app = new PythonGateway();
+        int result = app.callPython(10, 5);
+        System.out.println("Result from Python: " + result);
+
+        gatewayServer.shutdown();
+    }
+
+    public int callPython(int a, int b) {
+        // Assuming the Python script is running and waiting for input
+        JavaGatewayApp app = new JavaGatewayApp();
+        return app.add(a, b);
+    }
+
+    // Java interface for Python function
     public int add(int a, int b) {
-        GatewayServer gatewayServer = new GatewayServer();
-        try {
-            Py4JServerConnection connection = gatewayServer.getConnectionManager().getDefaultServerConnection();
-            connection.start();
-            Object pythonEntryPoint = connection.getPythonServerEntryPoint(new Class[] { PythonGateway.class });
-            return (int) pythonEntryPoint.getClass().getMethod("add", int.class, int.class).invoke(pythonEntryPoint, a, b);
-        } catch (Py4JNetworkException | ReflectiveOperationException e) {
-            e.printStackTrace();
-            return -1;
-        }
+        return a + b;
     }
 }
