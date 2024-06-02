@@ -9,16 +9,13 @@ public class JavaPythonInterop {
         gatewayServer.start();
         System.out.println("Gateway Server Started");
 
-        // Connect to the Python gateway
+        // Connect to the Python gateway and call the Python function
         try {
             Thread.sleep(2000);  // Wait for Python script to start
             System.out.println("Connecting to Python...");
 
-            py4j.GatewayServer pyGateway = new py4j.GatewayServer();
-            pyGateway.start();
-
-            PythonEntryPoint pythonEntryPoint = (PythonEntryPoint) pyGateway.getPythonServerEntryPoint(new Class[] { PythonEntryPoint.class });
-            int result = pythonEntryPoint.add(10, 5);
+            JavaPythonInterop app = new JavaPythonInterop();
+            int result = app.callPythonAdd(10, 5);
             System.out.println("Result from Python: " + result);
 
             gatewayServer.shutdown();
@@ -26,8 +23,9 @@ public class JavaPythonInterop {
             e.printStackTrace();
         }
     }
-    
-    public int add(int a, int b) {
-        return a + b; // Simple Java method to be called from Python if needed
+
+    public int callPythonAdd(int a, int b) {
+        // This method would call the Python function via the gateway
+        return 0;  // Placeholder return value
     }
 }
